@@ -12,16 +12,35 @@ import lombok.experimental.Accessors;
 @Data
 public class IdStore {
     private Integer id;
-
+    /**
+     *  ID实例KEY
+     */
     private String key;
+    /**
+     *  名称描述
+     */
     private String name;
+    /**
+     *  最大ID号
+     */
     private long max;
+
+    /**
+     * ID增长步长
+     */
     private int step;
-
+    /**
+     * 触发申请号段因子,100以内整数，表示当前Buffer的空闲未消耗的ID占比，空闲ID小于阈值时，触发下个Buffer预申请号段
+     */
     private int factor;
-
+    /**
+     * 损耗额度，当服务重启后，优先从镜像的SegmentBuffer副本加载, 在上次最后一个ID基础上，设置一定的损耗额度，防止ID重复
+     */
     private int wasteQuota;
 
+    /**
+     * 更新时间戳
+     */
     private Long ts;
 
     private IdStore(Builder builder) {

@@ -47,17 +47,10 @@ public class BufferAllocatorFactory {
                         return optional.isPresent() ? BufferAllocator.build(optional.get(), bufferPaddingExecutor) : null;
                     }
                     return null;
-                }, LoadState.cache);
-                break;
-            case cache:
-                allocator = executor(()->new BufferAllocator(store.getKey(), store.getStep(),store.getFactor(),store.getWasteQuota()), LoadState.register);
-                bufferPaddingExecutor.updateAllocator(allocator,0);
-                if(null != allocator){
-                    allocator.setBufferPaddingExecutor(bufferPaddingExecutor);
-                    allocator.setIsOk(true);
-                }
+                }, LoadState.register);
                 break;
             case register:
+                //从缓存中恢复，如果缓存不存在，则新注册
                 allocator = executor(() -> BufferAllocator.build(store, bufferPaddingExecutor), LoadState.failure);
                 break;
             default:
@@ -67,6 +60,10 @@ public class BufferAllocatorFactory {
         return null == allocator ? load(store) : allocator;
     }
 
+    /**
+     * 状态流转到下一个
+     * @param stage
+     */
     private void nextState(LoadState stage) {
         this.stage = stage;
     }
@@ -86,6 +83,6 @@ public class BufferAllocatorFactory {
 
 
     enum LoadState {
-        init, local, cache, register, failure
+        init, local, register, failure
     }
 }

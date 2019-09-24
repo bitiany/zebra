@@ -2,7 +2,7 @@ apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
 
-group 'cn.extrasky.cfs'
+group 'cn.extrasky.zebra'
 version '1.0.0'
 
 sourceCompatibility = 1.8
@@ -32,4 +32,23 @@ dependencies {
     annotationProcessor('org.projectlombok:lombok:1.18.4')
     compile 'org.projectlombok:lombok:1.18.4'
     testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) { from components.java }
+    }
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: "http://nexus.mytongche.com/repository/thridpart/") {
+                authentication(userName: 'deployment', password: 'Tcdeploy123')
+            }
+            pom.version = "1.0.0"
+            pom.artifactId = "zebra"
+            pom.groupId = "cn.extrasky.zebra"
+        }
+    }
 }

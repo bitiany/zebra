@@ -1,7 +1,7 @@
 package cn.extrasky.zebra;
 
 import cn.extrasky.zebra.cache.RedisClient;
-import cn.extrasky.zebra.depository.IdStoreDepositoryImpl;
+import cn.extrasky.zebra.depository.IdStoreDepository;
 import cn.extrasky.zebra.exception.IdGeneratorException;
 import cn.extrasky.zebra.model.IdStore;
 import lombok.extern.slf4j.Slf4j;
@@ -14,29 +14,29 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 
 @Slf4j
-public class SingleBufferAllocator {
+public class BufferAllocatorTemplate {
 
-    private static SingleBufferAllocator instance = null;
+    private static BufferAllocatorTemplate instance = null;
 
     private Map<String, BufferAllocator> allocatorMap = new ConcurrentHashMap<>();
     private FilePersistenceExecutor filePersistenceExecutor;
     private BufferPaddingExecutor bufferPaddingExecutor;
     private BufferAllocatorFactory allocatorFactory;
 
-    private SingleBufferAllocator(){
+    private BufferAllocatorTemplate(){
     }
 
-    public static SingleBufferAllocator start(RedisClient redisClient){
-        SingleBufferAllocator instance = getInstance();
+    public static BufferAllocatorTemplate start(RedisClient redisClient){
+        BufferAllocatorTemplate instance = getInstance();
         instance.initialize(redisClient);
         return instance;
     }
 
-    public static SingleBufferAllocator getInstance(){
+    public static BufferAllocatorTemplate getInstance(){
         if(null == instance){
-            synchronized (SingleBufferAllocator.class){
+            synchronized (BufferAllocatorTemplate.class){
                 if(null == instance){
-                    instance = new SingleBufferAllocator();
+                    instance = new BufferAllocatorTemplate();
                 }
             }
         }
@@ -72,8 +72,9 @@ public class SingleBufferAllocator {
         filePersistenceExecutor = new FilePersistenceExecutor();
         bufferPaddingExecutor = new BufferPaddingExecutor();
         bufferPaddingExecutor.setRedisClient(redisClient);
-        bufferPaddingExecutor.setIdStoreDepository(IdStoreDepositoryImpl.with(redisClient));
+        bufferPaddingExecutor.setIdStoreDepository(IdStoreDepository.with(redisClient));
         allocatorFactory = new BufferAllocatorFactory(bufferPaddingExecutor, filePersistenceExecutor);
+        //java 进程钩子
         Runtime.getRuntime().addShutdownHook(new Thread(this::shutdownHook));
     }
 

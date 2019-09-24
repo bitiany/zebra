@@ -43,7 +43,7 @@ public class IdGenTest {
 //        redisClient.executor("del", jedis -> jedis.del("id:store"));
 //        redisClient.executor("del", jedis -> jedis.del("msg_id:store"));
 
-        SingleBufferAllocator.start(redisClient).build(new IdStore().setKey("test_id").setStep(1000).setFactor(30).setWasteQuota(10));
+        BufferAllocatorTemplate.start(redisClient).build(new IdStore().setKey("test_id").setStep(1000).setFactor(30).setWasteQuota(10));
     }
 
     @Test
@@ -63,7 +63,7 @@ public class IdGenTest {
         for(int i = 0; i< threads; i++){
             new Thread(()->{
                 int index = 0;
-                allocator = SingleBufferAllocator.getAllocator("test_id");
+                allocator = BufferAllocatorTemplate.getAllocator("test_id");
                 while (index++ < counts){
                     try {
                         Result id = allocator.get();

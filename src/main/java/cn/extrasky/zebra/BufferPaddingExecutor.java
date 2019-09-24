@@ -58,6 +58,12 @@ public class BufferPaddingExecutor {
         }
     }
 
+    /**
+     * 通过分布式进行号段申请
+     * @param allocator
+     * @param pos
+     * @throws IdGeneratorException
+     */
     public void updateAllocator(BufferAllocator allocator, int pos) throws IdGeneratorException {
         StopWatch stopWatch = StopWatch.createUnstarted().start(allocator.getKey());
         String lockVal = String.valueOf(System.currentTimeMillis());

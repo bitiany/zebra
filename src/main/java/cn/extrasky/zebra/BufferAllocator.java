@@ -23,17 +23,31 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 public class BufferAllocator implements IdGenerator {
     @Getter
     private SegmentBuffer segmentBuffer;
-
+    /**
+     * Buffer中空闲ID阈值
+     */
     private int paddingThreshold;
+    /**
+     * 当前Buffer的index
+     */
     private volatile int currentPos;
+    /**
+     * 下一个segment是否处于可切换状态
+     */
     @Setter
     @Getter
     private volatile boolean nextReady;
+    /**
+     * 双Buffer
+     */
     @Getter
     private volatile   Segment[] buffers;
 
     @Getter
     private volatile AtomicBoolean isOk = new AtomicBoolean(false);
+    /**
+     * 线程是否在运行中
+     */
     @Getter
     private volatile AtomicBoolean isRunning = new AtomicBoolean(false);
 
@@ -59,6 +73,12 @@ public class BufferAllocator implements IdGenerator {
         this.paddingThreshold = segmentBuffer.getStep() * factor /100;
     }
 
+    /***
+     * 从保存的segmentBuffer副本恢复ID分配器
+     * @param segmentBuffer
+     * @param bufferPaddingExecutor
+     * @return
+     */
     public static BufferAllocator build(SegmentBuffer segmentBuffer, BufferPaddingExecutor bufferPaddingExecutor){
         BufferAllocator allocator = new BufferAllocator(segmentBuffer.getKey(), segmentBuffer.getStep(), segmentBuffer.getFactor(), segmentBuffer.getWasteQuota());
         allocator.currentPos = segmentBuffer.getCurrentPos();
@@ -72,6 +92,12 @@ public class BufferAllocator implements IdGenerator {
         return allocator;
     }
 
+    /**
+     * 初始化或从缓存中恢复ID分配器
+     * @param store
+     * @param bufferPaddingExecutor
+     * @return
+     */
     public static BufferAllocator build(IdStore store, BufferPaddingExecutor bufferPaddingExecutor){
         BufferAllocator allocator = new BufferAllocator(store.getKey(), store.getStep(), store.getFactor(), store.getWasteQuota());
         allocator.bufferPaddingExecutor = bufferPaddingExecutor;
@@ -85,6 +111,12 @@ public class BufferAllocator implements IdGenerator {
         return allocator;
     }
 
+    /**
+     *  恢复Segment
+     * @param segment
+     * @param max
+     * @param value
+     */
     private static void resumeSegment(Segment segment, long max, long value){
         segment.setMax(max);
         segment.setValue(new AtomicLong(value));
@@ -112,6 +144,7 @@ public class BufferAllocator implements IdGenerator {
         waitAndSleep();
         try{
             lock.writeLock().lock();
+            //当下个Buffer可切换时，切换Buffer
             if(this.nextReady){
                 setNextReady(false);
                 switchPos();
