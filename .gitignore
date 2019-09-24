@@ -5,6 +5,7 @@ gradle/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**
 !**/src/test/**
+zebra.bup
 
 ### STS ###
 .apt_generated

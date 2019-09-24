@@ -42,7 +42,7 @@ public class BufferAllocatorFactory {
                 break;
             case local:
                 allocator = executor(() -> {
-                    if(null != segmentBuffers && segmentBuffers.size() > 1) {
+                    if(null != segmentBuffers && segmentBuffers.size() > 0) {
                         Optional<SegmentBuffer> optional = segmentBuffers.stream().filter(ba -> ba.getKey().equals(store.getKey())).findFirst();
                         return optional.isPresent() ? BufferAllocator.build(optional.get(), bufferPaddingExecutor) : null;
                     }

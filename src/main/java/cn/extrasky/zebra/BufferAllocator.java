@@ -62,7 +62,7 @@ public class BufferAllocator implements IdGenerator {
     public static BufferAllocator build(SegmentBuffer segmentBuffer, BufferPaddingExecutor bufferPaddingExecutor){
         BufferAllocator allocator = new BufferAllocator(segmentBuffer.getKey(), segmentBuffer.getStep(), segmentBuffer.getFactor(), segmentBuffer.getWasteQuota());
         allocator.currentPos = segmentBuffer.getCurrentPos();
-        resumeSegment(allocator.getCurrent(), segmentBuffer.getMax(),(segmentBuffer.getCurrentValue() + segmentBuffer.getStep() * (100 + segmentBuffer.getWasteQuota()))/100);
+        resumeSegment(allocator.getCurrent(), segmentBuffer.getMax(),(segmentBuffer.getCurrentValue() +(segmentBuffer.getStep() * segmentBuffer.getWasteQuota())/100));
         if(segmentBuffer.isNextReady()) {
             resumeSegment(allocator.getBuffers()[allocator.nextPos()], segmentBuffer.getNextMax(), segmentBuffer.getNextMax() - segmentBuffer.getStep());
         }
