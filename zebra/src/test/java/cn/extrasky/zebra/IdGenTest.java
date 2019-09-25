@@ -20,17 +20,15 @@ public class IdGenTest {
 
     private RedisClient redisClient;
 
-    private BufferPaddingExecutor executor;
-
     private BufferAllocator allocator;
 
     @Before
     public void before() throws Exception {
         RedisConnectionFactory.RedisProperties properties = new RedisConnectionFactory.RedisProperties();
-        properties.setHost("localhost");
+        properties.setHost("192.168.4.25");
         properties.setDatabase(3);
         properties.setPort(6379);
-        properties.setPassword("123456");
+        properties.setPassword("");
         properties.setPrefix("id");
         RedisConnectionFactory factory =  RedisConnectionFactory.with(properties).build();
         redisClient = new RedisClient();
@@ -48,6 +46,7 @@ public class IdGenTest {
 
     @Test
     public void testGetId(){
+        allocator = BufferAllocatorTemplate.getAllocator("test_id");
         Result res = allocator.get();
         if(res.isSuccess()) {
             System.out.println(res.getId());
@@ -67,8 +66,8 @@ public class IdGenTest {
                 while (index++ < counts){
                     try {
                         Result id = allocator.get();
-                        redisClient.executor("zadd",
-                                jedis -> jedis.zadd("msg_id:store3", Double.valueOf(id.getId()), String.valueOf(id.getId())));
+//                        redisClient.executor("zadd",
+//                                jedis -> jedis.zadd("msg_id:store3", Double.valueOf(id.getId()), String.valueOf(id.getId())));
                         hashSet.add(id.getId());
                     } catch (Exception e) {
                         e.printStackTrace();

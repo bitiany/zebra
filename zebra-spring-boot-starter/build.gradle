@@ -1,6 +1,10 @@
-plugins {
-    id 'java'
-}
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
+
+//plugins {
+//    id 'java'
+//}
 
 group 'cn.extrasky.zebra'
 version '1.0.0'
@@ -8,9 +12,16 @@ version '1.0.0'
 sourceCompatibility = 1.8
 
 repositories {
+    mavenLocal()
     mavenCentral()
 }
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-autoconfigure', version: '2.1.8.RELEASE'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-configuration-processor', version: '2.1.8.RELEASE'
+    annotationProcessor('org.projectlombok:lombok:1.18.4')
+    compile group: "cn.extrasky.zebra", name: 'zebra', version: '1.0.0'
+    implementation("org.apache.commons:commons-pool2:2.5.0")
+    implementation("redis.clients:jedis:2.9.0")
 }
