@@ -31,6 +31,7 @@ public class BufferAllocatorFactory {
     }
 
     public BufferAllocator build(IdStore store) throws IdGeneratorException {
+        this.stage = LoadState.init;
         return load(store);
     }
 
