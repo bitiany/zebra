@@ -28,7 +28,7 @@ public class BufferAllocatorTemplateAutoConfiguration {
 
     // 注入属性类
     @Autowired
-    private BufferProperties hellowordProperties;
+    private BufferProperties bufferProperties;
 
     @Bean
     // 当容器没有这个 Bean 的时候才创建这个 Bean
@@ -36,26 +36,25 @@ public class BufferAllocatorTemplateAutoConfiguration {
     public BufferAllocatorTemplate helloworldService() throws IdGeneratorException {
 
         RedisConnectionFactory.RedisProperties properties = new RedisConnectionFactory.RedisProperties();
-        properties.setHost(hellowordProperties.getHost());
-        properties.setDatabase(hellowordProperties.getDatabase());
-        properties.setPort(hellowordProperties.getPort());
-        properties.setPassword(hellowordProperties.getPassword());
-        properties.setPrefix(hellowordProperties.getPrefix());
+        properties.setHost(bufferProperties.getHost());
+        properties.setDatabase(bufferProperties.getDatabase());
+        properties.setPort(bufferProperties.getPort());
+        properties.setPassword(bufferProperties.getPassword());
+        properties.setPrefix(bufferProperties.getPrefix());
         RedisConnectionFactory factory =  RedisConnectionFactory.with(properties).build();
         RedisClient redisClient = new RedisClient();
         redisClient.setRedisClientFactory( () -> {
             Jedis jedis = factory.fetchJedisConnector();
-            jedis.select(3);
+            jedis.select(bufferProperties.getDatabase());
             return jedis;
         });
         BufferAllocatorTemplate template = BufferAllocatorTemplate.start(redisClient);
-        if (!CollectionUtils.isEmpty(hellowordProperties.getIdStoreList())){
-            for (IdStoreProperties idStore : hellowordProperties.getIdStoreList()) {
-                template.build(new IdStore().setKey(idStore.getKey()).setStep(idStore.getStep()).setFactor(idStore.getFactor()).setWasteQuota(idStore.getWasteQuota()));
-            }
-            return template;
+        if (CollectionUtils.isEmpty(bufferProperties.getIdStoreList())){
+            throw new IdGeneratorException("initialize allocator error, because of lack store configuration");
         }
-        template.build(new IdStore().setKey("test_id").setStep(1000).setFactor(30).setWasteQuota(10));
+        for (IdStoreProperties idStore : bufferProperties.getIdStoreList()) {
+            template.build(new IdStore().setKey(idStore.getKey()).setStep(idStore.getStep()).setFactor(idStore.getFactor()).setWasteQuota(idStore.getWasteQuota()));
+        }
         return template;
     }
 }
