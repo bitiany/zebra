@@ -3,6 +3,9 @@ package cn.extrasky.zebra.config;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+import java.util.List;
+
+
 /**
  * @description:
  * @author: 田培融
@@ -21,5 +24,9 @@ public class BufferProperties {
     private String password;
 
     private String prefix;
+
+    private List<IdStoreProperties> idStoreList;
+
+
 
 }
