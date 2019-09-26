@@ -105,7 +105,6 @@ public class BufferAllocator implements IdGenerator {
         BufferAllocator allocator = new BufferAllocator(store.getKey(), store.getStep(), store.getFactor(), store.getWasteQuota());
         allocator.bufferPaddingExecutor = bufferPaddingExecutor;
         try {
-            allocator.setBufferPaddingExecutor(bufferPaddingExecutor);
             bufferPaddingExecutor.updateAllocator(allocator, 0);
             allocator.getSegmentBuffer().setCurrentValue(allocator.getCurrent().getValue().get())
                     .setCurrentPos(allocator.currentPos)
