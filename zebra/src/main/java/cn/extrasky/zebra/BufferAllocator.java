@@ -86,6 +86,9 @@ public class BufferAllocator implements IdGenerator {
         if(segmentBuffer.isNextReady()) {
             resumeSegment(allocator.getBuffers()[allocator.nextPos()], segmentBuffer.getNextMax(), segmentBuffer.getNextMax() - segmentBuffer.getStep());
         }
+        allocator.getSegmentBuffer().setCurrentValue(allocator.getCurrent().getValue().get())
+                .setCurrentPos(allocator.currentPos)
+                .setMax(allocator.getCurrent().getMax());
         allocator.setBufferPaddingExecutor(bufferPaddingExecutor);
         allocator.combineSegmentBuffer(segmentBuffer.getCurrentPos(), allocator.getCurrent().getMax(), segmentBuffer.getWasteQuota());
         allocator.setIsOk(true);
@@ -103,6 +106,9 @@ public class BufferAllocator implements IdGenerator {
         allocator.bufferPaddingExecutor = bufferPaddingExecutor;
         try {
             bufferPaddingExecutor.updateAllocator(allocator, 0);
+            allocator.getSegmentBuffer().setCurrentValue(allocator.getCurrent().getValue().get())
+                    .setCurrentPos(allocator.currentPos)
+                    .setMax(allocator.getCurrent().getMax());
             allocator.setIsOk(true);
         } catch (IdGeneratorException e) {
             e.printStackTrace();
