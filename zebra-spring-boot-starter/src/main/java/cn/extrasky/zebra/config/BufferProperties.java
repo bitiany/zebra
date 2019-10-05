@@ -11,7 +11,7 @@ import java.util.List;
  * @author: 田培融
  * @date: 2019-09-25 19:48
  */
-@ConfigurationProperties(prefix = "buffer")
+//@ConfigurationProperties(prefix = "buffer")
 @Data
 public class BufferProperties {
 
