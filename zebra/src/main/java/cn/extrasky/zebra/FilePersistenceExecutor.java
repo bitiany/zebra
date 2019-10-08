@@ -85,6 +85,7 @@ public class FilePersistenceExecutor {
                 segmentBuffers.add(segmentBuffer);
             }
             fis.close();
+            buf.close();
         }
         catch(IOException ex) {
 
