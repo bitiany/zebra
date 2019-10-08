@@ -1,5 +1,6 @@
 package cn.extrasky.zebra.config;
 
+import cn.extrasky.zebra.cache.RedisClientFactory;
 import cn.extrasky.zebra.utils.StringUtils;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPoolConfig;
@@ -15,7 +16,7 @@ import redis.clients.util.Pool;
  * @author: Gordon
  * @date: 2019-08-08
  */
-public class RedisConnectionFactory {
+public class RedisConnectionFactory implements RedisClientFactory {
     private JedisShardInfo shardInfo;
     private int timeout = Protocol.DEFAULT_TIMEOUT;
     private boolean usePool = true;
@@ -121,6 +122,7 @@ public class RedisConnectionFactory {
         }
     }
 
+    @Override
     public Jedis getJedisConnection() {
         Jedis jedis = fetchJedisConnector();
         if (dbIndex > 0 && jedis != null) {

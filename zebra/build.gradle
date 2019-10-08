@@ -13,7 +13,7 @@ repositories {
 
 buildscript{
     ext{
-        jedisVersion = "2.9.0"
+        jedisVersion = "2.9.1"
         logbackVersion = '1.1.11'
         slf4jVersion = '1.7.25'
         fastjsonVersion = '1.2.38'
@@ -27,10 +27,10 @@ dependencies {
             "ch.qos.logback:logback-classic:${logbackVersion}"
     )
     implementation("com.alibaba:fastjson:${fastjsonVersion}")
-    implementation("redis.clients:jedis:${jedisVersion}")
-    implementation("org.apache.commons:commons-pool2:2.5.0")
-    annotationProcessor('org.projectlombok:lombok:1.18.4')
-    compile 'org.projectlombok:lombok:1.18.4'
+    compile("redis.clients:jedis:${jedisVersion}")
+    compile("org.apache.commons:commons-pool2:2.6.1")
+    annotationProcessor('org.projectlombok:lombok:1.18.6')
+    compile 'org.projectlombok:lombok:1.18.6'
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
 
@@ -40,15 +40,3 @@ publishing {
     }
 }
 
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            repository(url: "http://nexus.mytongche.com/repository/thridpart/") {
-                authentication(userName: 'deployment', password: 'Tcdeploy123')
-            }
-            pom.version = "1.0.0"
-            pom.artifactId = "zebra"
-            pom.groupId = "cn.extrasky.zebra"
-        }
-    }
-}

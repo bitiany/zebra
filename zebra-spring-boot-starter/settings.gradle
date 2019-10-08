@@ -1,2 +1,4 @@
 rootProject.name = 'zebra-spring-boot-starter'
+include "zebra"
+project(':zebra').projectDir = new File('../zebra')
 

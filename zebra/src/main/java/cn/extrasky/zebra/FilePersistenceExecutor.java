@@ -84,6 +84,10 @@ public class FilePersistenceExecutor {
                 segmentBuffer = JSON.parseObject(line, SegmentBuffer.class);
                 segmentBuffers.add(segmentBuffer);
             }
+            //从本地文件获取buffer副本后，删除文件，防止下次因某种
+            if(null != segmentBuffers && segmentBuffers.size() > 0){
+                file.delete();
+            }
             fis.close();
             buf.close();
         }
