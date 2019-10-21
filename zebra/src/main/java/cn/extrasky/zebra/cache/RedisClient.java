@@ -41,7 +41,7 @@ public class RedisClient {
             jedis = redisClientFactory.getJedisConnection();
             return exec.apply(jedis);
         } catch (Exception e) {
-            log.error("[{}] - error:{}", String.format(LOG_FLAG, opt), e);
+            log.error("[{}] - error:", String.format(LOG_FLAG, opt), e);
             throw new Exception(e);
         } finally {
             if (null != jedis) {

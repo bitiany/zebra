@@ -4,6 +4,7 @@ import cn.extrasky.zebra.cache.RedisClient;
 import cn.extrasky.zebra.depository.IdStoreDepository;
 import cn.extrasky.zebra.exception.IdGeneratorException;
 import cn.extrasky.zebra.model.IdStore;
+import cn.extrasky.zebra.utils.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
@@ -23,7 +24,15 @@ public class BufferAllocatorTemplate {
     private BufferPaddingExecutor bufferPaddingExecutor;
     private BufferAllocatorFactory allocatorFactory;
 
+    private String backup;
+
     private BufferAllocatorTemplate(){
+    }
+
+    public static BufferAllocatorTemplate start(RedisClient redisClient, String backup){
+        BufferAllocatorTemplate instance = getInstance();
+        instance.setBackup(backup).initialize(redisClient);
+        return instance;
     }
 
     public static BufferAllocatorTemplate start(RedisClient redisClient){
@@ -68,8 +77,13 @@ public class BufferAllocatorTemplate {
         }
     }
 
+    public BufferAllocatorTemplate setBackup(String backup) {
+        this.backup = backup;
+        return this;
+    }
+
     protected void initialize(RedisClient redisClient){
-        filePersistenceExecutor = new FilePersistenceExecutor();
+        filePersistenceExecutor = StringUtils.isBlank(backup) ? new FilePersistenceExecutor() : new FilePersistenceExecutor(backup);
         bufferPaddingExecutor = new BufferPaddingExecutor();
         bufferPaddingExecutor.setRedisClient(redisClient);
         bufferPaddingExecutor.setIdStoreDepository(IdStoreDepository.with(redisClient));
