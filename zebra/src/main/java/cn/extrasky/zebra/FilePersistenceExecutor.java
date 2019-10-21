@@ -89,6 +89,7 @@ public class FilePersistenceExecutor {
                 file.delete();
             }
             fis.close();
+            buf.close();
         }
         catch(IOException ex) {
 
