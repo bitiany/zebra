@@ -55,6 +55,7 @@ public class IdGenTest {
 
     @Test
     public void concurrentTest(){
+        long startTime = System.currentTimeMillis();
         int threads  = 100;
         int counts = 1000;
         CountDownLatch latch = new CountDownLatch(threads);
@@ -83,6 +84,7 @@ public class IdGenTest {
         }
         try {
             latch.await();
+            System.out.println("用时" + (System.currentTimeMillis() - startTime));
             System.out.println("结束了，共执行了" + threads * counts + "次，生成了 " + hashSet.size() + "个ID");
             System.out.println(hashSet);
         } catch (InterruptedException e) {

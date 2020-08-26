@@ -26,7 +26,7 @@ public class IdStore {
     private long max;
 
     /**
-     * ID增长步长
+     * 申请号段ID增长步长
      */
     private int step;
     /**
